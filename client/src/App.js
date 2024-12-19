@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
 import { Container, Card, CardContent, Typography } from '@mui/material';
 import Navbar from './components/Navbar';
+import EmailVerify from './Pages/EmailVerify.js';
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -41,6 +42,7 @@ function App() {
               ))}
             </>
           } />
+          <Route path="/verify/:token" element={<EmailVerify />} />
           <Route path="/users" element={<Typography>Users Page</Typography>} />
           <Route path="/about" element={<Typography>About Page</Typography>} />
         </Routes>

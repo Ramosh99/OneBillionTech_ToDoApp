@@ -10,9 +10,18 @@ const protect = async (req, res, next) => {
             });
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
+        if (!jwt.verify(token, process.env.JWT_SECRET)) {
+            return res.status(401).json({
+                status: 'Failed',
+                message: 'Invalid token'
+            });
+        }
+
+        
+        req.decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
         next();
+
     } catch (err) {
         res.status(401).json({
             status: 'Failed',
@@ -21,4 +30,4 @@ const protect = async (req, res, next) => {
     }
 };
 
-module.exports = protect;
+export default protect;

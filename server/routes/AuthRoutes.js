@@ -1,8 +1,8 @@
 import express from 'express'
 import User from '../models/UserModel.js'
 import jwt from 'jsonwebtoken'
-import crypto from 'crypto'
 import nodemailer from 'nodemailer'
+import bcrypt from 'bcrypt'
 
 const router = express.Router()
 
@@ -18,19 +18,22 @@ const transporter = nodemailer.createTransport({
 // Register
 router.post('/register', async (req, res) => {
     try {
-        const verificationToken = crypto.randomBytes(32).toString('hex');
+        const saltRounds = 10;
+        // const verificationToken = crypto.randomBytes(32).toString('hex');
+        const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+        // const verificationToken = crypto.randomBytes(32).toString('hex');
         const user = new User({
             ...req.body,
-            verificationToken
+            password: hashedPassword,
         });
         await user.save();
 
         // Send verification email
-        const verificationLink = `${process.env.BASE_URL}/verify/${verificationToken}`;
+        // const verificationLink = `${process.env.BASE_URL}/verify/${verificationToken}`;
         await transporter.sendMail({
             to: user.email,
             subject: 'Verify your email',
-            html: `Click <a href="${verificationLink}">here</a> to verify your email`
+            // html: `Click <a href="${verificationLink}">here</a> to verify your email`
         });
 
         res.status(201).json({
@@ -51,21 +54,17 @@ router.post('/login', async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
         
-        if (!user || !await bcrypt.compare(password, user.password)) {
+        // Check if user exists and password is correct 
+        if (! user|| !bcrypt.compare(password,user.password)) {
+            console.log(password, user.password);
             return res.status(401).json({
                 status: 'Failed',
-                message: 'Invalid email or password'
+                message: 'Invalid password'
             });
         }
 
-        if (!user.isVerified) {
-            return res.status(401).json({
-                status: 'Failed',
-                message: 'Please verify your email first'
-            });
-        }
-
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+        // Generate JWT token
+        const token = jwt.sign({ id: user._id , role:"user"}, process.env.JWT_SECRET, {
             expiresIn: '1d'
         });
 
@@ -116,5 +115,4 @@ router.post('/forgot-password', async (req, res) => {
     }
 });
 
-// module.exports = router;
 export default router;
