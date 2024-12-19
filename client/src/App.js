@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
+import { Container, Card, CardContent, Typography } from '@mui/material';
+import Navbar from './components/Navbar';
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -21,17 +24,28 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <h1>Users List</h1>
-      <div>
-        {users.map(user => (
-          <div key={user._id}>
-            <h3>Name: {user.name}</h3>
-            <p>Email: {user.email}</p>
-          </div>
-        ))}
-      </div>
-    </div>
+    <BrowserRouter>
+      <Navbar />
+      <Container className="App" sx={{ mt: 4 }}>
+        <Routes>
+          <Route path="/" element={
+            <>
+              <Typography variant="h3" gutterBottom>Users List</Typography>
+              {users.map(user => (
+                <Card key={user._id} sx={{ mb: 2 }}>
+                  <CardContent>
+                    <Typography variant="h5">{user.name}</Typography>
+                    <Typography color="text.secondary">{user.email}</Typography>
+                  </CardContent>
+                </Card>
+              ))}
+            </>
+          } />
+          <Route path="/users" element={<Typography>Users Page</Typography>} />
+          <Route path="/about" element={<Typography>About Page</Typography>} />
+        </Routes>
+      </Container>
+    </BrowserRouter>
   );
 }
 

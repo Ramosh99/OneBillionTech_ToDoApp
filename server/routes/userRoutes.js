@@ -1,5 +1,10 @@
-const User = require('../models/UserModel.js')
-const router = require('express').Router()
+// const User = require('../models/UserModel.js')
+// const router = require('express').Router()
+
+import express from 'express'
+import User from '../models/UserModel.js'
+
+const router = express.Router()
 
 router.post('/add-user', async(req,res) => {
     const user = new User(req.body)
@@ -70,24 +75,5 @@ router.delete('/delete-user/:id', async(req,res) => {
     }
 })
 
-router.get('/get-test', async(req,res) => {
-    try {
-        // Test response
-        res.status(200).json({
-            success: true,
-            message: "Test API is working as perfectly",
-            data: {
-                timestamp: new Date(),
-                environment: process.env.NODE_ENV || 'development'
-            }
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Internal Server Error",
-            error: error.message
-        });
-    }
-});
-
-module.exports = router
+// module.exports = router
+export default router
