@@ -1,6 +1,3 @@
-// const User = require('../models/UserModel.js')
-// const router = require('express').Router()
-
 import express from 'express'
 import User from '../models/UserModel.js'
 
@@ -75,5 +72,4 @@ router.delete('/delete-user/:id', async(req,res) => {
     }
 })
 
-// module.exports = router
 export default router
