@@ -2,6 +2,8 @@ import express from 'express'
 import User from '../models/UserModel.js'
 import jwt from 'jsonwebtoken'
 import nodemailer from 'nodemailer'
+import crypto from 'crypto'
+import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
 
 const router = express.Router()
@@ -53,13 +55,32 @@ router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
+
+        console.log("x", password);
+        console.log(user.password);
+
+        // console.log(email, password);
         
-        // Check if user exists and password is correct 
-        if (! user|| !bcrypt.compare(password,user.password)) {
-            console.log(password, user.password);
+        if (!user) {
             return res.status(401).json({
                 status: 'Failed',
-                message: 'Invalid password'
+                message: 'User not found'
+            });
+        }
+        
+        // Check if password is correct
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        // console.log(password, user.password);
+        console.log(isPasswordValid);
+
+
+
+
+        if (!isPasswordValid) {
+            console.log('Invalid password attempt for user:', email);
+            return res.status(401).json({
+                status: 'Failed',
+                message: 'Invalid email or password'
             });
         }
 
@@ -80,7 +101,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// Forgot Password
+// Update forgot-password route
 router.post('/forgot-password', async (req, res) => {
     try {
         const user = await User.findOne({ email: req.body.email });
@@ -91,26 +112,98 @@ router.post('/forgot-password', async (req, res) => {
             });
         }
 
-        const resetToken = crypto.randomBytes(32).toString('hex');
+          // Generate JWT token with user ID
+    const resetToken = jwt.sign(
+        { userId: user._id },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+      );  
+        // Update user with reset token
         user.resetPasswordToken = resetToken;
-        user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
         await user.save();
 
-        const resetLink = `${process.env.BASE_URL}/reset-password/${resetToken}`;
-        await transporter.sendMail({
-            to: user.email,
-            subject: 'Password Reset',
-            html: `Click <a href="${resetLink}">here</a> to reset your password`
-        });
+        // Create reset link
+        const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
 
-        res.status(200).json({
-            status: 'Success',
-            message: 'Password reset link sent to email'
-        });
+        // Send email
+        try {
+            await transporter.sendMail({
+                to: user.email,
+                subject: 'Password Reset Request',
+                html: `
+                    <h1>Password Reset Request</h1>
+                    <p>You requested a password reset. Click the link below to reset your password:</p>
+                    <a href="${resetLink}">Reset Password</a>
+                    <p>If you didn't request this, please ignore this email.</p>
+                `
+            });
+
+            res.status(200).json({
+                status: 'Success',
+                message: 'Password reset link sent to email'
+            });
+        } catch (emailError) {
+            user.resetPasswordToken = undefined;
+            user.resetPasswordExpires = undefined;
+            await user.save();
+            
+            throw new Error('Failed to send reset email');
+        }
     } catch (err) {
         res.status(500).json({
             status: 'Failed',
             message: err.message
+        });
+    }
+});
+
+router.post('/reset-password', async (req, res) => {
+    try {
+        const { token, password } = req.body;
+
+        console.log("token is ", token);
+        console.log("password is ", password);
+
+        // Generate JWT token with user ID
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        // Extract userId from decoded token
+        const userId = decoded.userId;
+        console.log("userId is: ", userId);
+
+        // Find user with valid token
+        const user = await User.findOne({
+            _id: new mongoose.Types.ObjectId(userId)
+        });
+
+        console.log('user is', user);
+
+        if (!user) {
+            return res.status(400).json({
+                status: 'Failed',
+                message: 'Password reset token is invalid or has expired'
+            });
+        }
+        
+        // Clear reset token fields
+        const saltRounds = 10;
+        // const verificationToken = crypto.randomBytes(32).toString('hex');
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        user.password = hashedPassword;
+
+        console.log("y", user.password);
+        
+        await user.save();
+
+        res.status(200).json({
+            status: 'Success',
+            message: 'Password has been reset successfully'
+        });
+    } catch (err) {
+        console.error('Reset password error:', err);
+        res.status(500).json({
+            status: 'Failed',
+            message: 'Error resetting password',
+            error: err.message
         });
     }
 });

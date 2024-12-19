@@ -21,7 +21,7 @@ app.use(cors());
 //for routes
 app.use('/api',userRoutes);
 app.use('/api/auth',authRoutes);
-app.use('/api/tasks',protect,TaskRoutes);
+app.use('/api/tasks',TaskRoutes);
 
 const port = process.env.PORT || 8080;
 
