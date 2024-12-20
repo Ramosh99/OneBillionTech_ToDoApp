@@ -1,7 +1,44 @@
-name : Deploy
+name: Deploy Server to Azure
 
-on :
+on:
+  workflow_dispatch:
   push:
-    branch:
+    branches:
       - production
 
+env:
+  AZURE_WEBAPP_NAME: your-webapp-name
+  NODE_VERSION: '18.x'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: Install dependencies
+      working-directory: ./server
+      run: npm install
+
+    # - name: Create .env file
+    #   run: |
+    #     cd server
+    #     touch .env
+    #     echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
+    #     echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+    #     echo "NODE_ENV=production" >> .env
+
+    - name: Deploy to Azure
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: ./server
+        startup-command: 'npm start'

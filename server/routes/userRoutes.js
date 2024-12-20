@@ -71,5 +71,8 @@ router.delete('/delete-user/:id', async(req,res) => {
         })
     }
 })
+router.get('/test', (req,res) => {
+    res.send('Hello World')
+})
 
 export default router
