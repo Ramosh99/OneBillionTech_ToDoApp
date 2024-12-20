@@ -20,6 +20,10 @@ const taskSchema = new mongoose.Schema({
     isRemoved: {
         type: Boolean,
         default: false
+    },
+    scheduledFor: {
+        type: String,
+        default: null
     }
 }, { timestamps: true });
 
