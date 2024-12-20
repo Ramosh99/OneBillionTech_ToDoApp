@@ -1,33 +1,55 @@
 import { useState, useEffect } from 'react';
 import { Container, Typography, Box, CircularProgress, Alert } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import TaskList from '../components/TaskList';
 import AddTask from '../components/AddTask';
 import TaskFilter from '../components/TaskFilter';
 import axios from 'axios';
+import { useCallback } from 'react';
 
 const Tasks = () => {
+  const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('all');
+  const [userId, setUserId] = useState('');
 
-  const fetchTasks = async () => {
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    
+    try {
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      setUserId(decodedToken.id);
+    } catch (error) {
+      console.error('Invalid token:', error);
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  const fetchTasks = useCallback(async () => {//useCallback is used to prevent infinite loop
+    if (!userId) return;
+    
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:8080/api/tasks/get-tasks`);
+      const response = await axios.get(`http://localhost:8080/api/tasks/get-tasks`, {
+        params: { userId }
+      });
       setTasks(response.data.data.task);
-      console.log(response.data.data.task)
     } catch (err) {
       setError('Failed to fetch tasks');
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId]);
 
   useEffect(() => {
     fetchTasks();
-  }, []);
-
+  }, [fetchTasks]);
   const handleAddTask = async (newTask) => {
     console.log(newTask)
     try {

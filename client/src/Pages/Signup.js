@@ -35,7 +35,7 @@ const Signup = () => {
         email: formData.email,
         password: formData.password
       });
-      navigate('/verify-email-sent');
+      navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Signup failed');
     } finally {

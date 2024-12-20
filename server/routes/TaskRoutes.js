@@ -25,13 +25,26 @@ router.post('/add-task', async(req,res) => {
 
 router.get('/get-tasks', async(req,res) => {
     try{
-        const task = await Task.find()
+        const userId = req.query.userId
+        console.log(userId)
+        if(!userId){
+            return res.status(400).json({
+                status: 'Failed',
+                message : 'userId is required'
+            })
+        }
+        const tasks = await Task.find({
+            user: userId,
+            isRemoved: false
+        })
+
         res.status(200).json({
             status: 'Success',
             data : {
-                task : task
+                task : tasks
             }
         })
+        console.log(tasks)
     }catch(err){
         res.status(500).json({
             status: 'Failed',

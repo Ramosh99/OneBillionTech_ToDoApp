@@ -1,31 +1,53 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TextField, Button, Box } from '@mui/material';
-// import { create } from '@mui/material/styles/createTransitions';
+import { useNavigate } from 'react-router-dom';
 
 const AddTask = ({ onAdd }) => {
-  const dataStore = localStorage.getItem('token');
-  const decodedToken = JSON.parse(atob(dataStore.split('.')[1]));
-
+  const navigate = useNavigate();
+  const [decodedToken, setDecodedToken] = useState(null);
   const [taskData, setTaskData] = useState({
     name: '',
     status: 'active',
-    user: decodedToken.id,
+    user: '',
     isRemoved: false,
     createdAt: new Date().toISOString()
   });
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const decoded = JSON.parse(atob(token.split('.')[1]));
+      setDecodedToken(decoded);
+      setTaskData(prev => ({
+        ...prev,
+        user: decoded.id
+      }));
+    } catch (error) {
+      console.error('Token decode error:', error);
+      navigate('/login');
+    }
+  }, [navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!taskData.name.trim()) return;
     onAdd({ taskData });
-    setTaskData({ ...taskData }); // Reset name after submit
+    setTaskData(prev => ({
+      ...prev,
+      name: ''
+    }));
   };
 
   const handleChange = (e) => {
-    setTaskData({
-      ...taskData,
+    setTaskData(prev => ({
+      ...prev,
       name: e.target.value
-    });
+    }));
   };
 
   return (
@@ -41,7 +63,7 @@ const AddTask = ({ onAdd }) => {
         type="submit" 
         variant="contained" 
         color="primary"
-        disabled={!taskData.name.trim()}
+        disabled={!taskData.name.trim() || !decodedToken}
       >
         Add Task
       </Button>
