@@ -85,7 +85,7 @@ router.post('/login', async (req, res) => {
         }
 
         // Generate JWT token
-        const token = jwt.sign({ id: user._id}, process.env.JWT_SECRET, {
+        const token = jwt.sign({ id: user._id,userName: user.name,email:user.email}, process.env.JWT_SECRET, {
             expiresIn: '1d'
         });
 
@@ -203,6 +203,51 @@ router.post('/reset-password', async (req, res) => {
         res.status(500).json({
             status: 'Failed',
             message: 'Error resetting password',
+            error: err.message
+        });
+    }
+});
+
+router.put('/change-password/:userId', async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const userId = req.params.userId;
+
+        // Find user
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                status: 'Failed',
+                message: 'User not found'
+            });
+        }
+
+        // Verify current password
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({
+                status: 'Failed',
+                message: 'Current password is incorrect'
+            });
+        }
+
+        // Hash new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        // Update password
+        user.password = hashedPassword;
+        await user.save();
+
+        res.status(200).json({
+            status: 'Success',
+            message: 'Password changed successfully'
+        });
+    } catch (err) {
+        console.error('Change password error:', err);
+        res.status(500).json({
+            status: 'Failed',
+            message: 'Error changing password',
             error: err.message
         });
     }
