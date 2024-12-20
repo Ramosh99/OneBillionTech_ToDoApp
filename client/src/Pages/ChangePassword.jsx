@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Container, TextField, Button, Box, Typography, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import AuthService from '../services/AuthService';
 
 const ChangePassword = () => {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const ChangePassword = () => {
     }
 
     try {
-      const decoded = JSON.parse(atob(token.split('.')[1]));
+      const decoded = AuthService.decodeToken(token);
       setUserId(decoded.id);
     } catch (error) {
       navigate('/login');
@@ -40,7 +40,7 @@ const ChangePassword = () => {
     }
 
     try {
-      await axios.put(`http://localhost:8080/api/auth/change-password/${userId}`, {
+      await AuthService.changePassword(userId, {
         currentPassword: formData.currentPassword,
         newPassword: formData.newPassword
       });

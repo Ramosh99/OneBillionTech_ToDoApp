@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, TextField, Button, Container, Alert } from '@mui/material';
-import axios from 'axios';
+import AuthService from '../services/AuthService';
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('');
@@ -20,20 +20,15 @@ const ResetPassword = () => {
     }
 
     try {
-        console.log('in the reset password section ',token,password)
-      const response = await axios.post('http://localhost:8080/api/auth/reset-password', {
-        token: token,
-        password: password
-      });
-
-      setSuccess(response.data.message);
+      const response = await AuthService.resetPassword(token, password);
+      setSuccess(response.message);
+      
       setTimeout(() => {
         navigate('/login');
       }, 3000);
 
     } catch (error) {
-        console.log(error)
-      setError(error.response?.data?.message);
+      setError(error.response?.data?.message || 'Password reset failed');
     }
   };
 

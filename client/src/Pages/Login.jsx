@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { TextField, Button, Box, Typography, Container, Alert } from '@mui/material';
-import axios from 'axios';
+import AuthService from '../services/AuthService';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -12,12 +12,8 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   
-  
-  const clearToken = () => {
-    localStorage.removeItem('token');
-  };
   useEffect(() => {
-    clearToken();
+    AuthService.clearToken();
   }, []);
 
   const handleChange = (e) => {
@@ -30,9 +26,8 @@ const Login = () => {
     setError('');
     
     try {
-      const response = await axios.post(`http://localhost:8080/api/auth/login`, formData);
-      localStorage.setItem('token', response.data.token);
-      console.log(response.data.token);
+      const response = await AuthService.login(formData);
+      AuthService.setToken(response.token);
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
@@ -84,10 +79,10 @@ const Login = () => {
             </Typography>
           </Link>
           <Link to="/forgot-password">
-          <Typography variant="body2" align="center">
-            Forgot password?
+            <Typography variant="body2" align="center">
+              Forgot password?
             </Typography>
-            </Link>
+          </Link>
         </Box>
       </Box>
     </Container>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { TextField, Button, Box, Typography, Container, Alert } from '@mui/material';
-import axios from 'axios';
+import AuthService from '../services/AuthService';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -29,12 +29,13 @@ const Signup = () => {
     setError('');
     
     try {
-        console.log(formData)
-      await axios.post(`http://localhost:8080/api/auth/register`, {
+      const userData = {
         name: formData.name,
         email: formData.email,
         password: formData.password
-      });
+      };
+      
+      await AuthService.signup(userData);
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Signup failed');

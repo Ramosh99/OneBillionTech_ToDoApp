@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import TaskList from '../components/TaskList';
 import AddTask from '../components/AddTask';
 import TaskFilter from '../components/TaskFilter';
-import axios from 'axios';
 import { useCallback } from 'react';
+import TaskService from '../services/TaskService';
+import AuthService from '../services/AuthService';
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -16,7 +17,8 @@ const Tasks = () => {
   const [userId, setUserId] = useState('');
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    // const token = localStorage.getItem('token');
+    const token = AuthService.getToken();
     if (!token) {
       navigate('/login');
       return;
@@ -36,10 +38,8 @@ const Tasks = () => {
     
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:8080/api/tasks/get-tasks`, {
-        params: { userId }
-      });
-      setTasks(response.data.data.task);
+      const taskData = await TaskService.getTasks(userId);
+      setTasks(taskData);
     } catch (err) {
       setError('Failed to fetch tasks');
     } finally {
@@ -50,34 +50,28 @@ const Tasks = () => {
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
+
   const handleAddTask = async (newTask) => {
-    console.log(newTask)
     try {
-      const response = await axios.post(`http://localhost:8080/api/tasks/add-task`, newTask);
-      console.log('response',response.data.data)
-      console.log('tasks',tasks)
-      setTasks([...tasks, response.data.data.task]);
+      const addedTask = await TaskService.addTask(newTask);
+      setTasks([...tasks, addedTask]);
     } catch (err) {
       setError('Failed to add task');
     }
   };
 
   const handleUpdateTask = async (id, updates) => {
-    console.log(id)
-    console.log(updates)
     try {
-      await axios.put(`http://localhost:8080/api/tasks/update-task/${id}`, updates);
+      await TaskService.updateTask(id, updates);
       setTasks(tasks.map(task => task._id === id ? { ...task, ...updates } : task));
     } catch (err) {
       setError('Failed to update task');
-      console.log(err)
     }
   };
 
-  const handleDeleteTask = async (id,updates) => {
+  const handleDeleteTask = async (id, updates) => {
     try {
-      console.log(id,updates)
-      await axios.put(`http://localhost:8080/api/tasks/update-task/${id}`,updates);
+      await TaskService.deleteTask(id, updates);
       setTasks(tasks.filter(task => task._id !== id));
     } catch (err) {
       setError('Failed to delete task');
