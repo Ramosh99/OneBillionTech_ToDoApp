@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Changed to ubuntu
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -35,7 +35,7 @@ jobs:
     needs: build
     environment:
       name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+      url: https://onebilliontodo-cnaygdf7hmc5duht.canadacentral-01.azurewebsites.net
 
     steps:
       - name: Download artifact from build job
@@ -48,7 +48,5 @@ jobs:
         id: deploy-to-webapp
         with:
           app-name: 'onebilliontodo'
-          # slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE}}
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           package: .
-          startup-command: 'npm start'  # Now supported in Linux
