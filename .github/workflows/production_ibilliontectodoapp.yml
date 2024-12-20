@@ -48,7 +48,7 @@ jobs:
         id: deploy-to-webapp
         with:
           app-name: 'onebilliontodo'
-          slot-name: 'Production'
+          # slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE}}
           package: .
           startup-command: 'npm start'  # Now supported in Linux
