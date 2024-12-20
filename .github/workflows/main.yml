@@ -1,0 +1,7 @@
+name : Deploy
+
+on :
+  push:
+    branch:
+      - production
+
