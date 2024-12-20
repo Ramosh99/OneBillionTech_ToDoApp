@@ -14,8 +14,9 @@ const Tasks = () => {
   const fetchTasks = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/tasks`);
-      setTasks(response.data);
+      const response = await axios.get(`http://localhost:8080/api/tasks/get-tasks`);
+      setTasks(response.data.data.task);
+      console.log(response.data.data.task)
     } catch (err) {
       setError('Failed to fetch tasks');
     } finally {
@@ -28,26 +29,33 @@ const Tasks = () => {
   }, []);
 
   const handleAddTask = async (newTask) => {
+    console.log(newTask)
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/tasks`, newTask);
-      setTasks([...tasks, response.data]);
+      const response = await axios.post(`http://localhost:8080/api/tasks/add-task`, newTask);
+      console.log('response',response.data.data)
+      console.log('tasks',tasks)
+      setTasks([...tasks, response.data.data.task]);
     } catch (err) {
       setError('Failed to add task');
     }
   };
 
   const handleUpdateTask = async (id, updates) => {
+    console.log(id)
+    console.log(updates)
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/tasks/${id}`, updates);
+      await axios.put(`http://localhost:8080/api/tasks/update-task/${id}`, updates);
       setTasks(tasks.map(task => task._id === id ? { ...task, ...updates } : task));
     } catch (err) {
       setError('Failed to update task');
+      console.log(err)
     }
   };
 
-  const handleDeleteTask = async (id) => {
+  const handleDeleteTask = async (id,updates) => {
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/tasks/${id}`);
+      console.log(id,updates)
+      await axios.put(`http://localhost:8080/api/tasks/update-task/${id}`,updates);
       setTasks(tasks.filter(task => task._id !== id));
     } catch (err) {
       setError('Failed to delete task');

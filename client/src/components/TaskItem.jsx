@@ -4,11 +4,21 @@ import { Delete, Edit, Save, Cancel } from '@mui/icons-material';
 
 const TaskItem = ({ task, onUpdate, onDelete }) => {
   const [editing, setEditing] = useState(false);
-  const [editText, setEditText] = useState(task.title);
+  const [editText, setEditText] = useState(task.name);
 
   const handleSave = () => {
-    onUpdate(task._id, { title: editText });
-    setEditing(false);
+    if (editText.trim()) {
+      onUpdate(task._id, { name: editText.trim() });
+      setEditing(false);
+    }
+  };
+  const handleDelete = () => {
+    onDelete(task._id,{isRemoved:true});
+  };
+
+  const handleStatusChange = () => {
+    const newStatus = task.status === 'active' ? 'completed' : 'active';
+    onUpdate(task._id, { status: newStatus });
   };
 
   return (
@@ -19,7 +29,10 @@ const TaskItem = ({ task, onUpdate, onDelete }) => {
             <IconButton onClick={handleSave}>
               <Save />
             </IconButton>
-            <IconButton onClick={() => setEditing(false)}>
+            <IconButton onClick={() => {
+              setEditText(task.name);
+              setEditing(false);
+            }}>
               <Cancel />
             </IconButton>
           </>
@@ -28,7 +41,7 @@ const TaskItem = ({ task, onUpdate, onDelete }) => {
             <IconButton onClick={() => setEditing(true)}>
               <Edit />
             </IconButton>
-            <IconButton onClick={() => onDelete(task._id)}>
+            <IconButton onClick={() => handleDelete()}>
               <Delete />
             </IconButton>
           </>
@@ -36,19 +49,21 @@ const TaskItem = ({ task, onUpdate, onDelete }) => {
       }
     >
       <Checkbox
-        checked={task.completed}
-        onChange={() => onUpdate(task._id, { completed: !task.completed })}
+        checked={task.status === 'completed'}
+        onChange={handleStatusChange}
       />
       {editing ? (
         <TextField
           value={editText}
           onChange={(e) => setEditText(e.target.value)}
+          // onKeyPress={(e) => e.key === 'Enter' && handleSave()}
           fullWidth
+          autoFocus
         />
       ) : (
         <ListItemText 
-          primary={task.title}
-          sx={{ textDecoration: task.completed ? 'line-through' : 'none' }}
+          primary={task.name}
+          sx={{ textDecoration: task.status === 'completed' ? 'line-through' : 'none' }}
         />
       )}
     </ListItem>

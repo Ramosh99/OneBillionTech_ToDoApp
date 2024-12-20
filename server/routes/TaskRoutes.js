@@ -4,7 +4,9 @@ import Task from '../models/TaskModel.js'
 const router = express.Router()
 
 router.post('/add-task', async(req,res) => {
-    const task = new Task(req.body)
+    console.log('req.body', req.body)
+    const task = new Task(req.body.taskData)
+    console.log(task)
     try{
         await task.save()
         res.status(201).json({
@@ -39,8 +41,10 @@ router.get('/get-tasks', async(req,res) => {
 })
 
 router.put('/update-task/:id', async(req,res) => {
+    console.log(req.body)
     try{
         const task = await Task.findByIdAndUpdate(req.params.id, req.body, {new: true})
+        console.log('x-task',task)
         res.status(200).json({
             status: 'Success',
             data : {
