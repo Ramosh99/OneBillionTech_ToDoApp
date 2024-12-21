@@ -51,7 +51,12 @@ const ChangePassword = () => {
         confirmPassword: ''
       });
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to change password');
+      if (err.response?.status === 400) {
+        setError('Current password is incorrect');
+      } else {
+        setError('Failed to change password. Please try again.');
+      }
+      console.error(err);
     }
   };
 
@@ -65,7 +70,7 @@ const ChangePassword = () => {
   return (
     <Container maxWidth="xs">
       <Box sx={{ mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Typography component="h1" variant="h5">Change Password</Typography>
+        <Typography component="h1" variant="h5" sx={{fontWeight:'bold'}}><span style={{ color: '#c42cff' }}>Change </span> Password</Typography>
         
         {error && <Alert severity="error" sx={{ mt: 2, width: '100%' }}>{error}</Alert>}
         {success && <Alert severity="success" sx={{ mt: 2, width: '100%' }}>{success}</Alert>}

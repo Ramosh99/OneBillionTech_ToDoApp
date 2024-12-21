@@ -16,7 +16,7 @@ const ForgotPassword = () => {
       setMessage('Reset link sent to your email!');
       setError('');
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to send reset link');
+      setError('Failed to send reset link');
       setMessage('');
     } finally {
       setLoading(false);

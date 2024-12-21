@@ -38,7 +38,11 @@ const Signup = () => {
       await AuthService.signup(userData);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Signup failed');
+      if (err.response?.data?.message?.includes('E11000')) {
+        setError('Email address is already registered. Please use a different email.');
+      } else {
+        setError(err.response?.data?.message || 'An error occurred during signup');
+      }
     } finally {
       setLoading(false);
     }
@@ -47,7 +51,7 @@ const Signup = () => {
   return (
     <Container maxWidth="xs">
       <Box sx={{ mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Typography component="h1" variant="h5">Sign up</Typography>
+        <Typography component="h1" sx={{fontWeight:'bold'}} variant="h5"><span style={{ color: '#c42cff' }}>Sign </span>up</Typography>
         
         {error && <Alert severity="error" sx={{ mt: 2, width: '100%' }}>{error}</Alert>}
         
@@ -101,7 +105,7 @@ const Signup = () => {
           >
             {loading ? 'Signing up...' : 'Sign Up'}
           </Button>
-          <Link to="/login">
+          <Link to="/">
             <Typography variant="body2" align="center">
               Already have an account? Login
             </Typography>

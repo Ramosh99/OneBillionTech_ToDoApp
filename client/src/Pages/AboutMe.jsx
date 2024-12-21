@@ -28,8 +28,8 @@ const AboutMe = () => {
   return (
     <Container maxWidth="md">
       <Box sx={{ my: 4 }}>
-        <Typography variant="h4" gutterBottom align="center">
-          About Me
+        <Typography sx={{fontWeight:'bold'}} variant="h4" gutterBottom align="center">
+          <span style={{ color: '#c42cff' }}>About </span>Me
         </Typography>
         
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
@@ -41,7 +41,7 @@ const AboutMe = () => {
                 <PersonIcon fontSize="large" />
               </Avatar>
               <Box>
-                <Typography variant="h5">{userData.userName}</Typography>
+                <Typography variant="h5" sx={{fontWeight:'bold'}}>{userData.userName}</Typography>
                 <Typography color="textSecondary">{userData.email}</Typography>
               </Box>
             </Box>

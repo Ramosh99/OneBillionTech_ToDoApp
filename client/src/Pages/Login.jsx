@@ -30,7 +30,7 @@ const Login = () => {
       AuthService.setToken(response.token);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError('Login failed - please check your credentials');
     } finally {
       setLoading(false);
     }
@@ -39,7 +39,7 @@ const Login = () => {
   return (
     <Container maxWidth="xs">
       <Box sx={{ mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Typography component="h1" variant="h5">Login</Typography>
+        <Typography component="h1" variant="h5" sx={{fontWeight:'bold'}}><span style={{ color: '#c42cff' }}>Log</span>in</Typography>
         
         {error && <Alert severity="error" sx={{ mt: 2, width: '100%' }}>{error}</Alert>}
         
