@@ -17,7 +17,7 @@ const ChangePassword = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      navigate('/login');
+      navigate('/');
       return;
     }
 
@@ -25,7 +25,7 @@ const ChangePassword = () => {
       const decoded = AuthService.decodeToken(token);
       setUserId(decoded.id);
     } catch (error) {
-      navigate('/login');
+      navigate('/');
     }
   }, [navigate]);
 

@@ -20,7 +20,7 @@ const Tasks = () => {
     // const token = localStorage.getItem('token');
     const token = AuthService.getToken();
     if (!token) {
-      navigate('/login');
+      navigate('/');
       return;
     }
     
@@ -29,7 +29,7 @@ const Tasks = () => {
       setUserId(decodedToken.id);
     } catch (error) {
       console.error('Invalid token:', error);
-      navigate('/login');
+      navigate('/');
     }
   }, [navigate]);
 
