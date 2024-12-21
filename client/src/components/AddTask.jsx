@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { TextField, Button, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+// import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const AddTask = ({ onAdd }) => {
   const navigate = useNavigate();
@@ -73,7 +74,7 @@ const AddTask = ({ onAdd }) => {
             onChange={handleChange}
             placeholder="Add a new task"
           />
-          <DateTimePicker
+          <DatePicker
             value={taskData.scheduledFor}
             onChange={handleDateChange}
             renderInput={(params) => <TextField {...params} />}
