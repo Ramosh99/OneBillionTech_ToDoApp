@@ -73,7 +73,7 @@ const Login = () => {
           >
             {loading ? 'Logging in...' : 'Login'}
           </Button>
-          <Link to="/">
+          <Link to="/signup">
             <Typography variant="body2" align="center">
               Don't have an account? Sign up
             </Typography>

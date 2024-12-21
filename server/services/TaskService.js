@@ -1,27 +1,48 @@
 import Task from '../models/TaskModel.js'
+import redis from '../config/redis.js'
 
 export const TaskService = {
     createTask: async (taskData) => {
         const task = new Task(taskData)
-        return await task.save()
+        const savedTask = await task.save()
+        // Invalidate user's task cache when new task is created
+        await redis.del(`tasks:${taskData.user}`)
+        return savedTask
     },
 
     getTasksByUser: async (userId) => {
         if (!userId) {
             throw new Error('userId is required')
         }
-        return await Task.find({
+
+        const cacheKey = `tasks:${userId}`
+        const cachedTasks = await redis.get(cacheKey)
+        
+        if (cachedTasks) {
+            return JSON.parse(cachedTasks)
+        }
+
+        const tasks = await Task.find({
             user: userId,
             isRemoved: false
         })
+
+        await redis.setex(cacheKey, 3600, JSON.stringify(tasks))
+        return tasks
     },
 
     updateTask: async (taskId, updates) => {
-        return await Task.findByIdAndUpdate(taskId, updates, { new: true })
+        const task = await Task.findByIdAndUpdate(taskId, updates, { new: true })
+        // Invalidate cache after update
+        await redis.del(`tasks:${task.user}`)
+        return task
     },
 
     deleteTask: async (taskId) => {
-        return await Task.findByIdAndDelete(taskId)
+        const task = await Task.findByIdAndDelete(taskId)
+        // Invalidate cache after deletion
+        await redis.del(`tasks:${task.user}`)
+        return task
     }
 }
 

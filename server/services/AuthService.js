@@ -54,7 +54,6 @@ export const AuthService = {
         user.resetPasswordToken = resetToken;
         await user.save();
 
-        // const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
         const resetLink = frontendUrls.resetPassword(resetToken);
         await transporter.sendMail({
             to: user.email,
