@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/8e12e783-e2a1-4876-ac3d-3eee7082c56c/resourceGroups/rg-1/providers/Microsoft.Web/sites/todoserver",
+    "appService.deploySubpath": "server"
+}
