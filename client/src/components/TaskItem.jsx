@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { ListItem, ListItemText, IconButton, Checkbox, TextField, Box, Typography } from '@mui/material';
-import { Delete, Edit, Save, Cancel } from '@mui/icons-material';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { format, isToday } from 'date-fns';
+import { useState } from "react";
+import {  ListItem,  ListItemText,  IconButton,  Checkbox,  TextField,  Box,  Typography,} from "@mui/material";
+import {  Delete,  Edit,  Save,  Cancel,  RadioButtonUnchecked, CheckCircleRounded,} from "@mui/icons-material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { format, isToday } from "date-fns";
 
 const TaskItem = ({ task, onUpdate, onDelete }) => {
   const [editing, setEditing] = useState(false);
@@ -13,9 +13,9 @@ const TaskItem = ({ task, onUpdate, onDelete }) => {
 
   const handleSave = () => {
     if (editText.trim()) {
-      onUpdate(task._id, { 
+      onUpdate(task._id, {
         name: editText.trim(),
-        scheduledFor: editDate
+        scheduledFor: editDate,
       });
       setEditing(false);
     }
@@ -25,32 +25,33 @@ const TaskItem = ({ task, onUpdate, onDelete }) => {
     setEditDate(newDate);
   };
   const handleDelete = () => {
-    onDelete(task._id,{isRemoved:true});
+    onDelete(task._id, { isRemoved: true });
   };
 
   const handleStatusChange = () => {
-    const newStatus = task.status === 'active' ? 'completed' : 'active';
+    const newStatus = task.status === "active" ? "completed" : "active";
     onUpdate(task._id, { status: newStatus });
   };
   const isTaskToday = isToday(new Date(task.scheduledFor));
   return (
     <ListItem
       sx={{
-        // backgroundColor: isTaskToday ? 'rgba(144, 238, 144, 0.1)' : 'transparent',
         borderRadius: 1,
-        my: 0.5
+        my: 0.5,
       }}
       secondaryAction={
         editing ? (
           <>
-            <IconButton onClick={handleSave} sx={{top:-25,left:5}}>
+            <IconButton onClick={handleSave} sx={{ top: -25, left: 5 }}>
               <Save />
             </IconButton>
-            <IconButton onClick={() => {
-              setEditText(task.name);
-              setEditDate(new Date(task.scheduledFor));
-              setEditing(false);
-            }}>
+            <IconButton
+              onClick={() => {
+                setEditText(task.name);
+                setEditDate(new Date(task.scheduledFor));
+                setEditing(false);
+              }}
+            >
               <Cancel />
             </IconButton>
           </>
@@ -67,16 +68,19 @@ const TaskItem = ({ task, onUpdate, onDelete }) => {
       }
     >
       <Checkbox
-        checked={task.status === 'completed'}
+        checked={task.status === "completed"}
         onChange={handleStatusChange}
+        icon={<RadioButtonUnchecked />}
+        checkedIcon={<CheckCircleRounded />}
       />
-      <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+
+      <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
         {editing ? (
           <>
             <TextField
               value={editText}
               onChange={(e) => setEditText(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSave()}
+              onKeyPress={(e) => e.key === "Enter" && handleSave()}
               fullWidth
               autoFocus
               sx={{ mb: 1 }}
@@ -91,14 +95,23 @@ const TaskItem = ({ task, onUpdate, onDelete }) => {
           </>
         ) : (
           <>
-            <ListItemText 
+            <ListItemText
               primary={task.name}
-              sx={{ textDecoration: task.status === 'completed' ? 'line-through' : 'none' }}
+              sx={{
+                textDecoration:
+                  task.status === "completed" ? "line-through" : "none",
+              }}
             />
             <Typography
-            sx={{color: isTaskToday ? 'rgba(255, 44, 16, 0.67)' : 'black'}} 
-             variant="caption" color="text.secondary">
-              {format(new Date(task.scheduledFor), 'MMM dd, yyyy HH:mm')}
+              sx={{
+                color: isTaskToday
+                  ? "rgba(255, 44, 16, 0.67)"
+                  : "text.secondary",
+              }}
+              variant="caption"
+              color="text.secondary"
+            >
+              {format(new Date(task.scheduledFor), "MMM dd, yyyy HH:mm")}
             </Typography>
           </>
         )}
