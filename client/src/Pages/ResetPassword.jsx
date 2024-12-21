@@ -24,7 +24,7 @@ const ResetPassword = () => {
       setSuccess(response.message);
       
       setTimeout(() => {
-        navigate('/login');
+        navigate('/');
       }, 3000);
 
     } catch (error) {

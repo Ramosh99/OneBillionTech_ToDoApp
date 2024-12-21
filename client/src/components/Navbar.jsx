@@ -1,6 +1,6 @@
 import {LogoutRounded,SupervisedUserCircleOutlined} from "@mui/icons-material";
 import {AppBar,Toolbar,Typography,Button,Box,MenuItem,IconButton,Menu} from "@mui/material";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Brightness4Icon from "@mui/icons-material/Brightness4";

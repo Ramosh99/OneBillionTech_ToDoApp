@@ -11,7 +11,7 @@ const AboutMe = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      navigate('/login');
+      navigate('/');
       return;
     }
 
@@ -20,7 +20,7 @@ const AboutMe = () => {
       setUserData(decoded);
     } catch (error) {
       setError('Failed to load user data');
-      navigate('/login');
+      navigate('/');
     }
   }, [navigate]);
   console.log(userData)

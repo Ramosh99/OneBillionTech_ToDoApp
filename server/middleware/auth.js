@@ -16,10 +16,7 @@ const protect = async (req, res, next) => {
                 message: 'Invalid token'
             });
         }
-
-        
         req.decoded = jwt.verify(token, process.env.JWT_SECRET);
-        
         next();
 
     } catch (err) {

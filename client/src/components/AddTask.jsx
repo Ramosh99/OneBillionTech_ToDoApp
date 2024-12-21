@@ -21,7 +21,7 @@ const AddTask = ({ onAdd }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      navigate('/login');
+      navigate('/');
       return;
     }
 
@@ -34,7 +34,7 @@ const AddTask = ({ onAdd }) => {
       }));
     } catch (error) {
       console.error('Token decode error:', error);
-      navigate('/login');
+      navigate('/');
     }
   }, [navigate]);
 
