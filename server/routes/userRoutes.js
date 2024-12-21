@@ -106,7 +106,7 @@ router.delete('/delete-user/:id', async(req,res) => {
     }
 })
 router.get('/test', (req,res) => {
-    res.send('Hello World')
+    res.send('Hello World for uploading to Azure')
 })
 
 export default router
