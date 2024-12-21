@@ -2,6 +2,7 @@ import User from '../models/UserModel.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import nodemailer from 'nodemailer'
+import { frontendUrls } from '../config/urls.js';
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -53,7 +54,8 @@ export const AuthService = {
         user.resetPasswordToken = resetToken;
         await user.save();
 
-        const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
+        // const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
+        const resetLink = frontendUrls.resetPassword(resetToken);
         await transporter.sendMail({
             to: user.email,
             subject: 'Password Reset Request',

@@ -1,6 +1,12 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/auth';
+let API_URL
+
+if (window.location.hostname === 'localhost') {
+  API_URL = 'http://localhost:8080/api/auth';
+  } else {
+    API_URL = 'https://todoserver-g7dfdncwfzehc2by.southeastasia-01.azurewebsites.net/api/auth';
+  }
 
 export const AuthService = {
   login: async (credentials) => {
