@@ -1,6 +1,12 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/tasks';
+let API_URL;
+
+if (window.location.hostname === 'localhost') {
+  API_URL = 'http://localhost:8080/api/tasks';
+  } else {
+    API_URL = 'https://todoserver-g7dfdncwfzehc2by.southeastasia-01.azurewebsites.net/api/tasks';
+  }
 
 export const TaskService = {
   getTasks: async (userId) => {
