@@ -3,7 +3,9 @@ import TaskService from '../services/TaskService.js'
 export const TaskController = {
     addTask: async (req, res) => {
         try {
+            req.body.taskData.user = req.decoded.id
             const task = await TaskService.createTask(req.body.taskData)
+            console.log(req.body.taskData)
             res.status(201).json({
                 status: 'Success',
                 data: { task }
@@ -18,7 +20,7 @@ export const TaskController = {
 
     getTasks: async (req, res) => {
         try {
-            const tasks = await TaskService.getTasksByUser(req.query.userId)
+            const tasks = await TaskService.getTasksByUser(req.decoded.id)
             res.status(200).json({
                 status: 'Success',
                 data: { task: tasks }

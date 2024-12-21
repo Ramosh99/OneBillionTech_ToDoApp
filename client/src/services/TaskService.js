@@ -7,16 +7,25 @@ if (window.location.hostname === 'localhost') {
   } else {
     API_URL = 'https://yasiruramosh-fybrggbjdrbqh2cr.canadacentral-01.azurewebsites.net/api/tasks';
   }
+  const token = localStorage.getItem('token');
 
 export const TaskService = {
   getTasks: async (userId) => {
     const response = await axios.get(`${API_URL}/get-tasks`, {
-      params: { userId }
+      params: { userId },
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     });
     return response.data.data.task;
   },
   addTask: async (taskData) => {
-    const response = await axios.post(`${API_URL}/add-task`, taskData);
+
+    const response = await axios.post(`${API_URL}/add-task`, taskData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     return response.data.data.task;
   },
   updateTask: async (taskId, updates) => {
