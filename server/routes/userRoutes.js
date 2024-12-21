@@ -1,6 +1,6 @@
 import express from 'express'
 import User from '../models/UserModel.js'
-import redis from '../config/redis.js'
+// import redis from '../config/redis.js'
 
 const router = express.Router()
 
@@ -22,55 +22,55 @@ router.post('/add-user', async(req,res) => {
     }
 })
 
-// router.get('/get-users', async(req,res) => {
-//     try{
-//         const users = await User.find()
-//         res.status(200).json({
-//             status: 'Success',
-//             data : {
-//                 users : users
-//             }
-//         })
-//     }catch(err){
-//         res.status(500).json({
-//             status: 'Failed',
-//             message : err
-//         })
-//     }
-// })
-
 router.get('/get-users', async(req,res) => {
-    try {
-        // Check cache first
-        const cachedUsers = await redis.get('users')
-        if (cachedUsers) {
-            return res.status(200).json({
-                status: 'Success',
-                data: {
-                    users: JSON.parse(cachedUsers)
-                }
-            })
-        }
-
-        // If not in cache, get from DB
+    try{
         const users = await User.find()
-        
-        // Set cache with 1 hour expiration
-        await redis.setex('users', 3600, JSON.stringify(users))
-        
         res.status(200).json({
             status: 'Success',
-            data: {
-                users: users
+            data : {
+                users : users
             }
         })
-    } catch(err) {
+    }catch(err){
         res.status(500).json({
             status: 'Failed',
-            message: err
+            message : err
         })
     }
 })
+
+// router.get('/get-users', async(req,res) => {
+//     try {
+//         // Check cache first
+//         const cachedUsers = await redis.get('users')
+//         if (cachedUsers) {
+//             return res.status(200).json({
+//                 status: 'Success',
+//                 data: {
+//                     users: JSON.parse(cachedUsers)
+//                 }
+//             })
+//         }
+
+//         // If not in cache, get from DB
+//         const users = await User.find()
+        
+//         // Set cache with 1 hour expiration
+//         await redis.setex('users', 3600, JSON.stringify(users))
+        
+//         res.status(200).json({
+//             status: 'Success',
+//             data: {
+//                 users: users
+//             }
+//         })
+//     } catch(err) {
+//         res.status(500).json({
+//             status: 'Failed',
+//             message: err
+//         })
+//     }
+// })
 
 router.put('/update-user/:id', async(req,res) => {
     try{
