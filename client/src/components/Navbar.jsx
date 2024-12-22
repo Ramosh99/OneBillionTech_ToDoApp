@@ -1,13 +1,16 @@
 import {LogoutRounded,SupervisedUserCircleOutlined, Menu as MenuIcon} from "@mui/icons-material";
-import {AppBar,Toolbar,Typography,Button,Box,MenuItem,IconButton,Menu, Drawer, List, ListItem, ListItemText} from "@mui/material";
+import {AppBar,Toolbar,Typography,Button,Box,MenuItem,IconButton,Menu, Drawer, List, ListItem, ListItemText, ListItemIcon} from "@mui/material";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { toggleTheme } from "../store/slices/themeSlice";
+import  { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  
+  const Navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   
@@ -18,8 +21,8 @@ const Navbar = () => {
   const handleLogout = () => {
     // if(localStorage.getItem("token")){
       localStorage.removeItem("token");
-      window.location.reload();
-      // Navigate("/");
+      // window.location.reload();
+      Navigate("/");
     // }
   };
   const dispatch = useDispatch();
@@ -41,19 +44,40 @@ const Navbar = () => {
     </>
   );
 
+
   const drawer = (
-    <List>
+    <List sx={{
+      bgcolor: darkMode ? 'background.paper' : 'background.default',
+      height: '100%',
+    }}>
       <ListItem button component={Link} to="/dashboard" onClick={handleDrawerToggle}>
-        <ListItemText primary="Dashboard" />
+        <ListItemText 
+          primary={<Typography sx={{ color: '#c42cff'}}>Dashboard</Typography>} 
+        />
       </ListItem>
       <ListItem button component={Link} to="/about-me" onClick={handleDrawerToggle}>
-        <ListItemText primary="About Me" />
+        <ListItemText 
+          primary={<Typography sx={{ color: '#c42cff'}}>About Me</Typography>} 
+        />
       </ListItem>
       <ListItem button component={Link} to="/change-password" onClick={handleDrawerToggle}>
-        <ListItemText primary="Change Password" />
+        <ListItemText 
+          primary={<Typography sx={{ color: '#c42cff'}}>Change Password</Typography>} 
+        />
+      </ListItem>
+      <ListItem button onClick={() => dispatch(toggleTheme())}>
+        <ListItemText 
+          primary={<Typography sx={{ color: '#c42cff'}}>{darkMode ? "Light Mode" : "Dark Mode"}</Typography>} 
+        />
+      </ListItem>
+      <ListItem button onClick={handleLogout}>
+        <ListItemText 
+          primary={<Typography sx={{ color: '#c42cff'}}>Logout</Typography>} 
+        />
       </ListItem>
     </List>
   );
+  
 
   return (
     <AppBar position="static">
@@ -96,7 +120,7 @@ const Navbar = () => {
             color="inherit"
             component={Link}
             onClick={handleLogout}
-            to="/"
+            // to="/"
           >
             <LogoutRounded />
           </Button>
@@ -112,7 +136,7 @@ const Navbar = () => {
             keepMounted: true, // Better mobile performance
           }}
           sx={{
-            display: { xs: 'block', sm: 'none' },
+            display: { xs: 'block', sm: 'none'},
             '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 240 },
           }}
         >
