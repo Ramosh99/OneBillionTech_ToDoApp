@@ -3,7 +3,7 @@ import { TextField, Button, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { isBefore, startOfDay } from 'date-fns';
 
 const AddTask = ({ onAdd }) => {
@@ -82,12 +82,9 @@ const AddTask = ({ onAdd }) => {
             value={taskData.name}
             onChange={handleChange}
             placeholder="Add a new task"
-            // error={taskData.name.trim().length === 0}
-            // helperText={taskData.name.trim().length === 0 ? "Task name is required" : ""}
-          />
-          <DatePicker
+             />
+          <DateTimePicker
             value={taskData.scheduledFor}
-            // helperText={dateError ? "Please select a future date" : ""}
             onChange={handleDateChange}
             minDate={new Date()}
             slotProps={{ 

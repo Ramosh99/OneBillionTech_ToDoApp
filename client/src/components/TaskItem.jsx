@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ListItem, ListItemText, IconButton, Checkbox, TextField, Box, Typography } from "@mui/material";
 import { Delete, Edit, Save, Cancel, RadioButtonUnchecked, CheckCircleRounded } from "@mui/icons-material";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format, isToday, isBefore, startOfDay } from "date-fns";
@@ -110,7 +110,7 @@ const TaskItem = ({ task, onUpdate, onDelete }) => {
               helperText={editText.trim().length === 0 ? "Task name is required" : ""}
             />
             <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
+              <DateTimePicker
                 value={editDate}
                 onChange={handleDateChange}
                 minDate={new Date()}
@@ -118,7 +118,7 @@ const TaskItem = ({ task, onUpdate, onDelete }) => {
                   textField: { 
                     size: "small",
                     error: dateError,
-                    helperText: dateError ? "Please select a future date" : ""
+                    helperText: dateError && "Please select a future date"
                   } 
                 }}
               />

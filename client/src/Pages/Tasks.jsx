@@ -15,6 +15,8 @@ const Tasks = () => {
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('all');
   const [userId, setUserId] = useState('');
+  const [sortBy, setSortBy] = useState('createdDesc');
+  
 
   useEffect(() => {
     // const token = localStorage.getItem('token');
@@ -78,12 +80,15 @@ const Tasks = () => {
     }
   };
 
+  const onSortChange = (newSortValue) => {
+    setSortBy(newSortValue);
+  };
   return (
     <Container maxWidth="md">
       <Typography variant="h4" sx={{ my: 4 ,fontWeight:'bold'}}><span style={{ color: '#c42cff' }}>Task</span> Manager</Typography>
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
       <AddTask onAdd={handleAddTask} />
-      <TaskFilter filter={filter} onFilterChange={setFilter} />
+      <TaskFilter filter={filter} onFilterChange={setFilter} sortBy={sortBy} onSortChange={onSortChange} />
       {loading ? (
         <Box display="flex" justifyContent="center" my={4}>
           <CircularProgress />
@@ -94,6 +99,7 @@ const Tasks = () => {
           onUpdate={handleUpdateTask}
           onDelete={handleDeleteTask}
           filter={filter}
+          sortBy={sortBy}
         />
       )}
     </Container>

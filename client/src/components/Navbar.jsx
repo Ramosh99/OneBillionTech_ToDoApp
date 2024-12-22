@@ -19,11 +19,8 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    // if(localStorage.getItem("token")){
       localStorage.removeItem("token");
-      // window.location.reload();
       Navigate("/");
-    // }
   };
   const dispatch = useDispatch();
   const darkMode = useSelector((state) => state.theme.darkMode);
@@ -120,7 +117,7 @@ const Navbar = () => {
             color="inherit"
             component={Link}
             onClick={handleLogout}
-            // to="/"
+            to="/"
           >
             <LogoutRounded />
           </Button>

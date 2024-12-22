@@ -21,7 +21,7 @@ const TaskList = ({ tasks = [], onUpdate, onDelete, filter }) => {
         return a.status === 'active' ? -1 : 1;
       }
       // Then sort by creation date (newest first)
-      return new Date(b.createdAt) - new Date(a.createdAt);
+      return new Date(b.scheduledFor) - new Date(a.scheduledFor);
     });
   return (
     <List>
