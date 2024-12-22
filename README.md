@@ -2,7 +2,7 @@
 
 A robust full-stack Todo Application with modern features and comprehensive user management.
 
-## Key Features
+# Key Features
 
 ### **Authentication & User Management**
 - **JWT Token-based Authentication**: Ensures secure and seamless login sessions.
@@ -12,6 +12,7 @@ A robust full-stack Todo Application with modern features and comprehensive user
   - Forgot password with email recovery.
   - Reset password capability.
 - **Local Storage Integration**: Persistent authentication state.
+- **File Formating Tools**: Prettier for consistent code formatting.
 
 ### **Task Management**
 - Full CRUD operations for todos.
@@ -69,5 +70,3 @@ Experience the application live here: [Todo App](https://one-billion-tech-to-do-
    ```bash
    git checkout cloneed
    ```
-
-## Happy Coding! 🚀
