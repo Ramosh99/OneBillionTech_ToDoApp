@@ -28,7 +28,7 @@ const ResetPassword = () => {
       }, 3000);
 
     } catch (error) {
-      setError(error.response?.data?.message || 'Password reset failed');
+      setError('Password reset failed');
     }
   };
 

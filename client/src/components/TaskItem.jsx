@@ -1,18 +1,33 @@
-import { useState } from "react";
-import {  ListItem,  ListItemText,  IconButton,  Checkbox,  TextField,  Box,  Typography,} from "@mui/material";
-import {  Delete,  Edit,  Save,  Cancel,  RadioButtonUnchecked, CheckCircleRounded,} from "@mui/icons-material";
+import { useState, useEffect } from "react";
+import { ListItem, ListItemText, IconButton, Checkbox, TextField, Box, Typography } from "@mui/material";
+import { Delete, Edit, Save, Cancel, RadioButtonUnchecked, CheckCircleRounded } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { format, isToday } from "date-fns";
+import { format, isToday, isBefore, startOfDay } from "date-fns";
 
 const TaskItem = ({ task, onUpdate, onDelete }) => {
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState(task.name);
   const [editDate, setEditDate] = useState(new Date(task.scheduledFor));
+  const [dateError, setDateError] = useState(false);
+  const [isValid, setIsValid] = useState(true);
+
+  useEffect(() => {
+    if (editing) {
+      validateForm();
+    }
+  }, [editText, editDate, editing]);
+
+  const validateForm = () => {
+    const isDateValid = !isBefore(editDate, startOfDay(new Date()));
+    const isTextValid = editText.trim().length > 0;
+    setIsValid(isDateValid && isTextValid);
+    setDateError(!isDateValid);
+  };
 
   const handleSave = () => {
-    if (editText.trim()) {
+    if (isValid && editText.trim()) {
       onUpdate(task._id, {
         name: editText.trim(),
         scheduledFor: editDate,
@@ -22,6 +37,8 @@ const TaskItem = ({ task, onUpdate, onDelete }) => {
   };
 
   const handleDateChange = (newDate) => {
+    const isValidDate = !isBefore(newDate, startOfDay(new Date()));
+    setDateError(!isValidDate);
     setEditDate(newDate);
   };
   const handleDelete = () => {
@@ -42,7 +59,11 @@ const TaskItem = ({ task, onUpdate, onDelete }) => {
       secondaryAction={
         editing ? (
           <>
-            <IconButton onClick={handleSave} sx={{ top: -25, left: 5 }}>
+            <IconButton 
+              onClick={handleSave} 
+              sx={{ top: -25, left: 5 }}
+              disabled={!isValid}
+            >
               <Save />
             </IconButton>
             <IconButton
@@ -50,6 +71,7 @@ const TaskItem = ({ task, onUpdate, onDelete }) => {
                 setEditText(task.name);
                 setEditDate(new Date(task.scheduledFor));
                 setEditing(false);
+                setDateError(false);
               }}
             >
               <Cancel />
@@ -80,16 +102,25 @@ const TaskItem = ({ task, onUpdate, onDelete }) => {
             <TextField
               value={editText}
               onChange={(e) => setEditText(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && handleSave()}
+              onKeyPress={(e) => e.key === "Enter" && isValid && handleSave()}
               fullWidth
               autoFocus
               sx={{ mb: 1 }}
+              error={editText.trim().length === 0}
+              helperText={editText.trim().length === 0 ? "Task name is required" : ""}
             />
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
                 value={editDate}
                 onChange={handleDateChange}
-                slotProps={{ textField: { size: "small" } }}
+                minDate={new Date()}
+                slotProps={{ 
+                  textField: { 
+                    size: "small",
+                    error: dateError,
+                    helperText: dateError ? "Please select a future date" : ""
+                  } 
+                }}
               />
             </LocalizationProvider>
           </>
@@ -119,5 +150,6 @@ const TaskItem = ({ task, onUpdate, onDelete }) => {
     </ListItem>
   );
 };
+
 
 export default TaskItem;

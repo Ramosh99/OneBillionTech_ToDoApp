@@ -80,7 +80,7 @@ const Tasks = () => {
 
   return (
     <Container maxWidth="md">
-      <Typography variant="h4" sx={{ my: 4 }}>Task Manager</Typography>
+      <Typography variant="h4" sx={{ my: 4 ,fontWeight:'bold'}}><span style={{ color: '#c42cff' }}>Task</span> Manager</Typography>
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
       <AddTask onAdd={handleAddTask} />
       <TaskFilter filter={filter} onFilterChange={setFilter} />

@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { TextField, Button, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-// import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { isBefore, startOfDay } from 'date-fns';
 
 const AddTask = ({ onAdd }) => {
   const navigate = useNavigate();
   const [decodedToken, setDecodedToken] = useState(null);
+  const [dateError, setDateError] = useState(false);
   const [taskData, setTaskData] = useState({
     name: '',
     status: 'active',
@@ -17,6 +18,11 @@ const AddTask = ({ onAdd }) => {
     createdAt: new Date().toISOString(),
     scheduledFor: null
   });
+
+  const isFormValid = () => {
+    if (!taskData.name.trim() || !taskData.scheduledFor) return false;
+    return !isBefore(taskData.scheduledFor, startOfDay(new Date()));
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -39,15 +45,16 @@ const AddTask = ({ onAdd }) => {
   }, [navigate]);
 
   const handleSubmit = (e) => {
-    console.log(taskData)
     e.preventDefault();
-    if (!taskData.name.trim()) return;
-    onAdd({ taskData });
-    setTaskData(prev => ({
-      ...prev,
-      name: '',
-      scheduledFor: null
-    }));
+    if (isFormValid()) {
+      onAdd({ taskData });
+      setTaskData(prev => ({
+        ...prev,
+        name: '',
+        scheduledFor: null
+      }));
+      setDateError(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -58,6 +65,8 @@ const AddTask = ({ onAdd }) => {
   };
 
   const handleDateChange = (newDate) => {
+    const isValidDate = !isBefore(newDate, startOfDay(new Date()));
+    setDateError(!isValidDate);
     setTaskData(prev => ({
       ...prev,
       scheduledFor: newDate
@@ -73,19 +82,28 @@ const AddTask = ({ onAdd }) => {
             value={taskData.name}
             onChange={handleChange}
             placeholder="Add a new task"
+            // error={taskData.name.trim().length === 0}
+            // helperText={taskData.name.trim().length === 0 ? "Task name is required" : ""}
           />
           <DatePicker
             value={taskData.scheduledFor}
+            // helperText={dateError ? "Please select a future date" : ""}
             onChange={handleDateChange}
-            renderInput={(params) => <TextField {...params} />}
-            sx={{ width: 250 }}
+            minDate={new Date()}
+            slotProps={{ 
+              textField: { 
+                error: dateError,
+                helperText: dateError ? "Please select a future date" : "",
+                sx: { width: 250 }
+              } 
+            }}
           />
         </Box>
         <Button 
           type="submit" 
           variant="contained" 
           color="primary"
-          disabled={!taskData.name.trim() || !decodedToken}
+          disabled={!isFormValid() || !decodedToken}
         >
           Add Task
         </Button>
