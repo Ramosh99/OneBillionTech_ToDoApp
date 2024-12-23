@@ -52,6 +52,9 @@ const ForgotPassword = () => {
             {loading ? 'Sending...' : 'Send Reset Link'}
           </Button>
         </Box>
+        <Typography>
+          <a href="/">Back to Login</a>
+        </Typography>
       </Box>
     </Container>
   );

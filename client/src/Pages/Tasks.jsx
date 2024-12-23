@@ -19,7 +19,6 @@ const Tasks = () => {
   
 
   useEffect(() => {
-    // const token = localStorage.getItem('token');
     const token = AuthService.getToken();
     if (!token) {
       navigate('/');
