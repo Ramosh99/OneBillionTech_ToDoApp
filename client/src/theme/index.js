@@ -48,15 +48,15 @@ export const darkTheme = createTheme({
             styleOverrides: {
                 root: {
                     '&.Mui-focused': {
-                        backgroundColor: 'transparent', // Removes blue background when focused
+                        backgroundColor: 'transparent', 
                     },
                     '&.Mui-filled': {
-                        backgroundColor: 'transparent', // Removes blue background when filled
+                        backgroundColor: 'transparent', 
                     },
                     '& input:-webkit-autofill': {
-                        backgroundColor: 'transparent', // Handles autofill background
-                        WebkitBoxShadow: '0 0 0 1000px #1e1e1e inset', // Match dark theme background
-                        WebkitTextFillColor: '#fff', // Ensures autofill text is visible
+                        backgroundColor: 'transparent',
+                        WebkitBoxShadow: '0 0 0 1000px #1e1e1e inset', 
+                        WebkitTextFillColor: '#fff', 
                     },
                 },
             },

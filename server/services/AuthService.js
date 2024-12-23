@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 
 export const AuthService = {
     register: async (userData) => {
-        const saltRounds = 10;
+        const saltRounds = 10;//number of times to hash the password
         const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
         const user = new User({
             ...userData,

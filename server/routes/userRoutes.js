@@ -38,6 +38,7 @@ router.get('/get-users', async(req,res) => {
         })
     }
 })
+// this code contains sample code for caching using redis
 
 // router.get('/get-users', async(req,res) => {
 //     try {
