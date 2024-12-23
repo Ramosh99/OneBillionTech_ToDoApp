@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { TextField, Button, Box, Typography, Container, Alert } from '@mui/material';
-import AuthService from '../services/AuthService';
+import AuthService from '../services/authService';
 
 const Login = () => {
   const [formData, setFormData] = useState({

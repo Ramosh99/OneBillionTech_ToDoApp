@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, TextField, Button, Container, Alert } from '@mui/material';
-import AuthService from '../services/AuthService';
+import AuthService from '../services/authService';
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('');

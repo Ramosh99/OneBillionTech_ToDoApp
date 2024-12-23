@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { TextField, Button, Box, Typography, Container, Alert } from '@mui/material';
-import AuthService from '../services/AuthService';
+import AuthService from '../services/authService';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');

@@ -14,22 +14,25 @@ export const TaskService = {
         if (!userId) {
             throw new Error('userId is required')
         }
-
-        const cacheKey = `tasks:${userId}`
+    
+        // Create cache key using the tasks data
+        const tasks = await Task.find({
+            user: userId,
+            isRemoved: false
+        })
+    
+        const cacheKey = `tasks:${JSON.stringify(tasks)}`
         const cachedTasks = await redis.get(cacheKey)
         
         if (cachedTasks) {
             return JSON.parse(cachedTasks)
         }
-
-        const tasks = await Task.find({
-            user: userId,
-            isRemoved: false
-        })
-
+    
+        // Store the tasks data in Redis
         await redis.setex(cacheKey, 3600, JSON.stringify(tasks))
         return tasks
     },
+    
 
     updateTask: async (taskId, updates) => {
         const task = await Task.findByIdAndUpdate(taskId, updates, { new: true })

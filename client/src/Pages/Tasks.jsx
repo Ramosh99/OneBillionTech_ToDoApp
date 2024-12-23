@@ -6,7 +6,7 @@ import AddTask from '../components/AddTask';
 import TaskFilter from '../components/TaskFilter';
 import { useCallback } from 'react';
 import TaskService from '../services/TaskService';
-import AuthService from '../services/AuthService';
+import AuthService from '../services/authService';
 
 const Tasks = () => {
   const navigate = useNavigate();

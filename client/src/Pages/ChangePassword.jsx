@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Container, TextField, Button, Box, Typography, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import AuthService from '../services/AuthService';
+import AuthService from '../services/authService';
 
 const ChangePassword = () => {
   const navigate = useNavigate();
