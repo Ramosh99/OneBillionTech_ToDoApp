@@ -17,7 +17,7 @@ const protect = async (req, res, next) => {
       });
     }
     req.decoded = jwt.verify(token, process.env.JWT_SECRET);
-    next();
+    next();//function that calls the next middleware in the stack
   } catch (err) {
     res.status(401).json({
       status: "Failed",
@@ -27,3 +27,9 @@ const protect = async (req, res, next) => {
 };
 
 export default protect;
+
+// Intercepts incoming requests
+// Extracts the JWT token from Authorization header
+// Verifies the token's validity using JWT_SECRET
+// Adds decoded user data to the request object
+// Either allows the request to continue or returns an error

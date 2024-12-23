@@ -12,8 +12,8 @@ dotenv.config();
 // Connect to MongoDB
 connectDB();
 
-app.use(express.json());
-app.use(cors());
+app.use(express.json());//for parsing json data
+app.use(cors());//for parsing json data
 
 //for routes
 app.use("/api", userRoutes);

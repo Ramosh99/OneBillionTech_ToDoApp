@@ -10,3 +10,4 @@ router.post("/reset-password", AuthController.resetPassword);
 router.put("/change-password/:userId", AuthController.changePassword);
 
 export default router;
+

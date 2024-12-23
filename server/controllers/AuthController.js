@@ -86,3 +86,9 @@ export const AuthController = {
 };
 
 export default AuthController;
+
+// Handles authentication-specific routes
+// Processes login/register/password requests
+// Interacts with AuthService for business logic
+// Returns appropriate responses and status codes
+// Manages error handling for auth operations
