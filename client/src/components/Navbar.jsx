@@ -7,37 +7,44 @@ import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { toggleTheme } from "../store/slices/themeSlice";
 import  { useNavigate } from "react-router-dom";
+import AuthService from "../services/AuthService";
 
 const Navbar = () => {
   
   const Navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const isUserLoggedIn = AuthService.getToken();
   
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
   const handleLogout = () => {
-      localStorage.removeItem("token");
+      AuthService.clearToken();
       Navigate("/");
   };
+  //dispatch is used to dispatch an action to the redux store
   const dispatch = useDispatch();
   const darkMode = useSelector((state) => state.theme.darkMode);
 
   const menuItems = (
     <>
-      <Button color="inherit" sx={{fontWeight:'bold'}} component={Link} to="/dashboard">
-        <span style={{ color: '#c42cff' }}>Dash </span>board
-      </Button>
-      <Button
-        color="inherit"
-        aria-controls="simple-menu"
-        aria-haspopup="true"
-        onClick={(event) => setAnchorEl(event.currentTarget)}
-      >
-        <SupervisedUserCircleOutlined />
-      </Button>
+      {isUserLoggedIn && (
+        <>
+          <Button color="inherit" sx={{fontWeight:'bold'}} component={Link} to="/dashboard">
+            <span style={{ color: '#c42cff' }}>Dash </span>board
+          </Button>
+          <Button
+            color="inherit"
+            aria-controls="simple-menu"
+            aria-haspopup="true"
+            onClick={(event) => setAnchorEl(event.currentTarget)}
+          >
+            <SupervisedUserCircleOutlined />
+          </Button>
+        </>
+      )}
     </>
   );
 
@@ -52,24 +59,28 @@ const Navbar = () => {
           primary={<Typography sx={{ color: '#c42cff'}}>Dashboard</Typography>} 
         />
       </ListItem>
-      <ListItem button component={Link} to="/about-me" onClick={handleDrawerToggle}>
-        <ListItemText 
-          primary={<Typography sx={{ color: '#c42cff'}}>About Me</Typography>} 
-        />
-      </ListItem>
-      <ListItem button component={Link} to="/change-password" onClick={handleDrawerToggle}>
-        <ListItemText 
-          primary={<Typography sx={{ color: '#c42cff'}}>Change Password</Typography>} 
-        />
-      </ListItem>
+      {isUserLoggedIn && (
+        <>
+          <ListItem button component={Link} to="/about-me" onClick={handleDrawerToggle}>
+            <ListItemText 
+              primary={<Typography sx={{ color: '#c42cff'}}>About Me</Typography>} 
+            />
+          </ListItem>
+          <ListItem button component={Link} to="/change-password" onClick={handleDrawerToggle}>
+            <ListItemText 
+              primary={<Typography sx={{ color: '#c42cff'}}>Change Password</Typography>} 
+            />
+          </ListItem>
+          <ListItem button onClick={handleLogout}>
+            <ListItemText 
+              primary={<Typography sx={{ color: '#c42cff'}}>Logout</Typography>} 
+            />
+          </ListItem>
+        </>
+      )}
       <ListItem button onClick={() => dispatch(toggleTheme())}>
         <ListItemText 
           primary={<Typography sx={{ color: '#c42cff'}}>{darkMode ? "Light Mode" : "Dark Mode"}</Typography>} 
-        />
-      </ListItem>
-      <ListItem button onClick={handleLogout}>
-        <ListItemText 
-          primary={<Typography sx={{ color: '#c42cff'}}>Logout</Typography>} 
         />
       </ListItem>
     </List>
@@ -113,14 +124,14 @@ const Navbar = () => {
           >
             {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
           </IconButton>
-          <Button
+          {isUserLoggedIn &&(<Button
             color="inherit"
             component={Link}
             onClick={handleLogout}
             to="/"
           >
             <LogoutRounded />
-          </Button>
+          </Button>)}
         </Box>
 
         {/* Mobile Drawer */}
@@ -141,9 +152,9 @@ const Navbar = () => {
         </Drawer>
 
         {/* Original Menu for desktop */}
-        <Menu
+       <Menu
           id="simple-menu"
-          anchorEl={anchorEl}
+          anchorEl={anchorEl}//anchorEl is a state variable that is used to store the anchor element for the menu anchor element is the element that is clicked to open the menu
           keepMounted
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
@@ -169,5 +180,4 @@ const Navbar = () => {
     </AppBar>
   );
 };
-
 export default Navbar;

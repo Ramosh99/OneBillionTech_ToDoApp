@@ -15,7 +15,7 @@ const ChangePassword = () => {
   const [userId, setUserId] = useState('');
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = AuthService.getToken();
     if (!token) {
       navigate('/');
       return;

@@ -1,41 +1,35 @@
 import axios from 'axios';
+import { API_URL_AUTH } from '../config/config';
 
-let API_URL
-
-if (window.location.hostname === 'localhost') {
-  API_URL = 'http://localhost:8080/api/auth';
-  } else {
-    API_URL = 'https://yasiruramosh-fybrggbjdrbqh2cr.canadacentral-01.azurewebsites.net/api/auth';
-  }
 
 export const AuthService = {
   login: async (credentials) => {
-    const response = await axios.post(`${API_URL}/login`, credentials);
+    const response = await axios.post(`${API_URL_AUTH}/login`, credentials);
     return response.data;
   },
 
   signup: async (userData) => {
-    const response = await axios.post(`${API_URL}/register`, userData);
+    const response = await axios.post(`${API_URL_AUTH}/register`, userData);
     return response.data;
   },
 
   resetPassword: async (token, password) => {
-    const response = await axios.post(`${API_URL}/reset-password`, { token, password });
+    const response = await axios.post(`${API_URL_AUTH}/reset-password`, { token, password });
     return response.data;
   },
 
   changePassword: async (userId, passwordData) => {
-    const response = await axios.put(`${API_URL}/change-password/${userId}`, passwordData);
+    const response = await axios.put(`${API_URL_AUTH}/change-password/${userId}`, passwordData);
     return response.data;
   },
 
   forgotPassword: async (email) => {
-    const response = await axios.post(`${API_URL}/forgot-password`, { email });
+    const response = await axios.post(`${API_URL_AUTH}/forgot-password`, { email });
     return response.data;
   },
 
   decodeToken: (token) => {
-    return JSON.parse(atob(token.split('.')[1]));
+    return JSON.parse(atob(token.split('.')[1]));//atob() function decodes a string of data which has been encoded using base-64 encoding
   },
 
   getToken: () => {

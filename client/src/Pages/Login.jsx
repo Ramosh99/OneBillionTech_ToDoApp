@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { TextField, Button, Box, Typography, Container, Alert } from '@mui/material';
 import AuthService from '../services/AuthService';
+import toast, { Toaster } from 'react-hot-toast';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -11,7 +12,7 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     AuthService.clearToken();
   }, []);
@@ -24,13 +25,14 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    
+   
     try {
       const response = await AuthService.login(formData);
       AuthService.setToken(response.token);
+      toast.success('Login successful!');
       navigate('/dashboard');
     } catch (err) {
-      setError('Login failed - please check your credentials');
+      toast.error('Login failed \n please check your credentials');
     } finally {
       setLoading(false);
     }
@@ -38,11 +40,12 @@ const Login = () => {
 
   return (
     <Container maxWidth="xs">
+      <Toaster position="top-center" />
       <Box sx={{ mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Typography component="h1" variant="h5" sx={{fontWeight:'bold'}}><span style={{ color: '#c42cff' }}>Log</span>in</Typography>
-        
-        {error && <Alert severity="error" sx={{ mt: 2, width: '100%' }}>{error}</Alert>}
-        
+       
+        {/* {error && <Alert severity="error" sx={{ mt: 2, width: '100%' }}>{error}</Alert>} */}
+       
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <TextField
             margin="normal"

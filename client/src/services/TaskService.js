@@ -1,16 +1,10 @@
 import axios from 'axios';
+import { API_URL_TASK } from '../config/config';
 
-let API_URL;
-
-if (window.location.hostname === 'localhost') {
-  API_URL = 'http://localhost:8080/api/tasks';
-  } else {
-    API_URL = 'https://yasiruramosh-fybrggbjdrbqh2cr.canadacentral-01.azurewebsites.net/api/tasks';
-  }
 
   export const TaskService = {
   getTasks: async (userId) => {
-    const response = await axios.get(`${API_URL}/get-tasks`, {
+    const response = await axios.get(`${API_URL_TASK}/get-tasks`, {
       params: { userId },
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -20,7 +14,7 @@ if (window.location.hostname === 'localhost') {
   },
   addTask: async (taskData) => {
 
-    const response = await axios.post(`${API_URL}/add-task`, taskData, {
+    const response = await axios.post(`${API_URL_TASK}/add-task`, taskData, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
@@ -28,11 +22,11 @@ if (window.location.hostname === 'localhost') {
     return response.data.data.task;
   },
   updateTask: async (taskId, updates) => {
-    const response = await axios.put(`${API_URL}/update-task/${taskId}`, updates);
+    const response = await axios.put(`${API_URL_TASK}/update-task/${taskId}`, updates);
     return response.data.data;
   },
   deleteTask: async (taskId, updates) => {
-    const response = await axios.put(`${API_URL}/update-task/${taskId}`, updates);
+    const response = await axios.put(`${API_URL_TASK}/update-task/${taskId}`, updates);
     return response.data;
   }
 };

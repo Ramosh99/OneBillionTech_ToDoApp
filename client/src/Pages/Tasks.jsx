@@ -27,7 +27,7 @@ const Tasks = () => {
     }
     
     try {
-      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      const decodedToken = AuthService.decodeToken(token);
       setUserId(decodedToken.id);
     } catch (error) {
       console.error('Invalid token:', error);

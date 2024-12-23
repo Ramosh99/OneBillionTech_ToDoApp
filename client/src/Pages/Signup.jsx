@@ -46,7 +46,7 @@ const Signup = () => {
       await AuthService.signup(userData);
       navigate('/dashboard');
     } catch (err) {
-      if (err.response?.data?.message?.includes('E11000')) {
+      if (err.response?.data?.message?.includes('E11000')) {// Duplicate key error
         setError('Email address is already registered. Please use a different email.');
       } else {
         setError(err.response?.data?.message || 'An error occurred during signup');

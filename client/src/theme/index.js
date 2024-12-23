@@ -16,10 +16,10 @@ export const lightTheme = createTheme({
             styleOverrides: {
                 root: {
                     '&.Mui-focused': {
-                        backgroundColor: 'transparent', // Removes blue background when focused
+                        backgroundColor: 'transparent', 
                     },
                     '&.Mui-filled': {
-                        backgroundColor: 'transparent', // Removes blue background when filled
+                        backgroundColor: 'transparent', 
                     },
                     '& input:-webkit-autofill': {
                         backgroundColor: 'transparent', // Handles autofill background
